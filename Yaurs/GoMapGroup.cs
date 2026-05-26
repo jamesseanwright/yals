@@ -8,7 +8,11 @@ static class GoMapGroup
 
         urls.MapGet("/{id}", async (IUrlService urlService, Ulid id) =>
         {
-            throw new NotImplementedException();
+            var url = await urlService.GetUrlAsync(id);
+
+            // TODO: handle missing URL as 404
+
+            return TypedResults.Redirect(url.TargetUri.ToString(), permanent: true, preserveMethod: true);
         });
     }
 }

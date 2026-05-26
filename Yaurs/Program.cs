@@ -12,5 +12,6 @@ builder.Services.AddScoped<IUrlService, UrlService>();
 var app = builder.Build();
 
 UrlsMapGroup.Register(app);
+GoMapGroup.Register(app);
 
 app.Run();

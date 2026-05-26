@@ -26,7 +26,10 @@ public class FunctionalTestFixture : IAsyncLifetime
             throw new Exception("Failed to create YaursWebApplicationFactory");
         }
 
-        return application.CreateClient();
+        return application.CreateClient(new()
+        {
+            AllowAutoRedirect = false,
+        });
     }
 
     public async Task InitializeAsync()
