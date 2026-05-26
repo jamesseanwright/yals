@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http.HttpResults;
+
 namespace Yaurs;
 
 static class GoMapGroup
@@ -6,13 +8,11 @@ static class GoMapGroup
     {
         var urls = app.MapGroup("/go");
 
-        urls.MapGet("/{id}", async (IUrlService urlService, Ulid id) =>
-        {
-            var url = await urlService.GetUrlAsync(id);
-
-            // TODO: handle missing URL as 404
-
-            return TypedResults.Redirect(url.TargetUri.ToString(), permanent: true, preserveMethod: true);
-        });
+        urls.MapGet("/{id}", async Task<Results<RedirectHttpResult, NotFound>> (IUrlService urlService, Ulid id) =>
+            await urlService.GetUrlAsync(id)
+                is Url url
+                    ? TypedResults.Redirect(url.TargetUri.ToString(), permanent: true, preserveMethod: true)
+                    : TypedResults.NotFound()
+        );
     }
 }

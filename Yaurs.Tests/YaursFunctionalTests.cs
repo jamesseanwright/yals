@@ -91,4 +91,14 @@ public class YaursFunctionalTests(FunctionalTestFixture fixture) : IClassFixture
         Assert.Equal(HttpStatusCode.PermanentRedirect, goRes.StatusCode);
         Assert.Equal(createUrlResBody.TargetUri, goRes.Headers.Location);
     }
+
+    [Fact]
+    public async Task TestGoReturns404WhenUrlNotFound()
+    {
+        var client = fixture.CreateClient();
+
+        var res = await client.GetAsync($"/go/{Ulid.NewUlid()}");
+
+        Assert.Equal(HttpStatusCode.NotFound, res.StatusCode);
+    }
 }
