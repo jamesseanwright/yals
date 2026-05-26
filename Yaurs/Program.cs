@@ -11,15 +11,6 @@ builder.Services.AddScoped<IUrlService, UrlService>();
 
 var app = builder.Build();
 
-
-// TODO: this should probably be moved (Routes.cs?)
-var urls = app.MapGroup("/urls");
-
-urls.MapPost("/", async (IUrlService urlService, CreateUrlDto createUrlDto) =>
-{
-    var createdUrl = await urlService.CreateUrlAsync(createUrlDto.TargetUri);
-
-    return TypedResults.Created($"http://TODO", createdUrl);
-});
+UrlsMapGroup.Register(app);
 
 app.Run();
