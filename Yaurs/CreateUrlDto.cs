@@ -2,5 +2,5 @@ namespace Yaurs;
 
 public record CreateUrlDto
 {
-    public required Uri TargetUrl { get; set; }
+    public required Uri TargetUri { get; set; }
 }

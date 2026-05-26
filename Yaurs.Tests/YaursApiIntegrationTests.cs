@@ -2,9 +2,7 @@
 
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Builders;
-using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net.Http.Json;
-using System.Net;
 
 public class PostgresContainerFixture : IAsyncLifetime
 {
@@ -43,7 +41,7 @@ public class YaursApiIntegrationTests(PostgresContainerFixture postgres) : IClas
 
         var res = await client.PostAsync("/urls", JsonContent.Create(new CreateUrlDto
         {
-            TargetUrl = new Uri("https://foo"),
+            TargetUri = new Uri("https://foo"),
         }));
 
         res.EnsureSuccessStatusCode();

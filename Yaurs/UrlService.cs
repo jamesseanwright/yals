@@ -1,9 +1,23 @@
 namespace Yaurs;
 
-class UrlService : IUrlService
+class UrlService(UrlDb urlDb) : IUrlService
 {
-    public Task<Url> GetUrlAsync(Ulid id)
+    public async Task<Url> CreateUrlAsync(Uri targetUri)
     {
-        throw new NotImplementedException();
+        var id = Ulid.NewUlid();
+
+        urlDb.Add(new UrlEntity
+        {
+            Id = id,
+            TargetUri = targetUri,
+        });
+
+        await urlDb.SaveChangesAsync();
+
+        return new Url
+        {
+            Id = id,
+            TargetUri = targetUri,
+        };
     }
 }
