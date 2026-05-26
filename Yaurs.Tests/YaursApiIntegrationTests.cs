@@ -12,7 +12,7 @@ public class PostgresContainerFixture : IAsyncLifetime
     {
         postgres = new ContainerBuilder("postgres:18.4")
             .WithPortBinding(5432, true)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilExternalTcpPortIsAvailable(5432))
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilCommandIsCompleted("pg_isready"))
             .WithEnvironment("POSTGRES_HOST_AUTH_METHOD", "trust")
             .Build();
     }
