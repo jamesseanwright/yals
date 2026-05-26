@@ -11,7 +11,7 @@ public class YaursWebApplicationFactory(ushort dbPort) : WebApplicationFactory<P
 {
     protected override IHost CreateHost(IHostBuilder builder)
     {
-        var host = base.CreateHost(builder) ?? throw new Exception("Host could not be created");
+        var host = base.CreateHost(builder) ?? throw new TestSetupException("Host could not be created");
 
         using (var scope = host.Services.CreateScope())
         {

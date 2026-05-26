@@ -1,19 +1,16 @@
 namespace Yaurs;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 public class UrlDb(DbContextOptions<UrlDb> options) : DbContext(options)
 {
     public DbSet<UrlEntity> Urls { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
-        // TODO: see if this can be applied to the type across the project
-        modelBuilder.Entity<UrlEntity>()
-            .Property(e => e.Id)
-            .HasConversion(
-                v => v.ToGuid(),
-                v => new Ulid(v)
-            );
+        configurationBuilder.Properties<Ulid>().HaveConversion<UlidToGuidConverter>();
     }
 }
+
+class UlidToGuidConverter() : ValueConverter<Ulid, Guid>(v => v.ToGuid(), v => new Ulid(v));
