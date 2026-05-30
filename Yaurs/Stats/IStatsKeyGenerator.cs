@@ -2,10 +2,10 @@ namespace Yaurs.Stats;
 
 record GeneratedStatsKey
 {
-    public string RawKey { get; private set; } // TODO: make fields required
-    public byte[] HashedKey { get; private set; }
+    public required string RawKey { get; set; }
+    public required byte[] HashedKey { get; set; }
 
-    public byte[] Salt { get; private set; }
+    public required byte[] Salt { get; set; }
 }
 
 interface IStatsKeyGenerator
