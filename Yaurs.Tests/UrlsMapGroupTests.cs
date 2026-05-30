@@ -57,6 +57,6 @@ class FakeUrlService : IUrlService
     public Task<Url> CreateUrlAsync(Uri targetUri)
     {
         LastCreatedUri = targetUri;
-        return Task.FromResult(new Url { Id = Ulid.NewUlid(), TargetUri = targetUri });
+        return Task.FromResult(new Url { Id = Ulid.NewUlid(), TargetUri = targetUri, StatsKey = "Stats key" });
     }
 }

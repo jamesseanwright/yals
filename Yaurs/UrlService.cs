@@ -10,6 +10,7 @@ class UrlService(UrlDb urlDb) : IUrlService
         {
             Id = urlEntity.Id,
             TargetUri = urlEntity.TargetUri,
+            StatsKey = "",
         } : null;
     }
 
@@ -21,6 +22,8 @@ class UrlService(UrlDb urlDb) : IUrlService
         {
             Id = id,
             TargetUri = targetUri,
+            HashedStatsKey = "TODO"u8.ToArray(),
+            StatsKeySalt = "TODO"u8.ToArray(),
         });
 
         await urlDb.SaveChangesAsync();
@@ -29,6 +32,7 @@ class UrlService(UrlDb urlDb) : IUrlService
         {
             Id = id,
             TargetUri = targetUri,
+            StatsKey = "",
         };
     }
 }

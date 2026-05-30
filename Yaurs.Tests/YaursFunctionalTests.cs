@@ -68,6 +68,7 @@ public class YaursFunctionalTests(FunctionalTestFixture fixture) : IClassFixture
         Assert.NotNull(resBody);
         Assert.IsType<Ulid>(resBody.Id);
         Assert.Equal(new Uri("https://foo"), resBody.TargetUri);
+        Assert.True(resBody.StatsKey.Length > 64, "resBody.StatsKey is an unexpected length");
     }
 
     [Fact]
