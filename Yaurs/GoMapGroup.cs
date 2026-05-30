@@ -14,6 +14,7 @@ static class GoMapGroup
 
             if (url is not null)
             {
+                await urlService.RegisterHit(url.Id);
                 return TypedResults.Redirect(url.TargetUri.ToString(), permanent: true, preserveMethod: true);
             }
 

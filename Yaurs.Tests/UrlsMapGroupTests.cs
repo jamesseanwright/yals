@@ -59,4 +59,9 @@ class FakeUrlService : IUrlService
         LastCreatedUri = targetUri;
         return Task.FromResult(new CreatedUrlDto { Id = Ulid.NewUlid(), TargetUri = targetUri, StatsKey = "Stats key" });
     }
+
+    public Task RegisterHit(Ulid Id)
+    {
+        return Task.CompletedTask;
+    }
 }

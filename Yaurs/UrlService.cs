@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Yaurs.Stats;
 
 namespace Yaurs;
@@ -49,5 +50,20 @@ class UrlService(UrlDb urlDb, IStatsKeyGenerator statsKeyGenerator) : IUrlServic
             TargetUri = targetUri,
             StatsKey = statsKey.RawKey,
         };
+    }
+
+    public async Task RegisterHit(Ulid id)
+    {
+        // We're bypassing the EF Core change tracker here, but
+        // given we won't typically depend upon the updated hit count
+        // subsequently in the request lifecycle, we can optimise for performance.
+        await urlDb.Urls
+            .Where(u => u.Id == id)
+            .ExecuteUpdateAsync(
+            setters => setters.SetProperty(
+                u => u.LifetimeHits,
+                u => u.LifetimeHits + 1
+            )
+        );
     }
 }
