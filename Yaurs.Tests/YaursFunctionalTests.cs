@@ -63,7 +63,7 @@ public class YaursFunctionalTests(FunctionalTestFixture fixture) : IClassFixture
 
         Assert.Equal(HttpStatusCode.Created, res.StatusCode);
 
-        var resBody = await res.Content.ReadFromJsonAsync<Url>();
+        var resBody = await res.Content.ReadFromJsonAsync<CreatedUrlDto>();
 
         Assert.NotNull(resBody);
         Assert.IsType<Ulid>(resBody.Id);

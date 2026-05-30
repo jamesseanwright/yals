@@ -11,7 +11,7 @@ static class UrlsMapGroup
         urls.MapPost("/", HandleCreate);
     }
 
-    internal static async Task<Results<Created<Url>, ValidationProblem>> HandleCreate(IUrlService urlService, CreateUrlDto createUrlDto)
+    internal static async Task<Results<Created<CreatedUrlDto>, ValidationProblem>> HandleCreate(IUrlService urlService, CreateUrlDto createUrlDto)
     {
         if (!IsRedirectableUri(createUrlDto.TargetUri))
         {

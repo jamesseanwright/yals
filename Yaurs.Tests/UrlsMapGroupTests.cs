@@ -16,7 +16,7 @@ public class UrlsMapGroupTests
 
         var result = await UrlsMapGroup.HandleCreate(urlService, dto);
 
-        Assert.IsType<Created<Url>>(result.Result);
+        Assert.IsType<Created<CreatedUrlDto>>(result.Result);
         Assert.Equal(new Uri(uri), urlService.LastCreatedUri);
     }
 
@@ -54,9 +54,9 @@ class FakeUrlService : IUrlService
 
     public Task<Url?> GetUrlAsync(Ulid id) => Task.FromResult<Url?>(null);
 
-    public Task<Url> CreateUrlAsync(Uri targetUri)
+    public Task<CreatedUrlDto> CreateUrlAsync(Uri targetUri)
     {
         LastCreatedUri = targetUri;
-        return Task.FromResult(new Url { Id = Ulid.NewUlid(), TargetUri = targetUri, StatsKey = "Stats key" });
+        return Task.FromResult(new CreatedUrlDto { Id = Ulid.NewUlid(), TargetUri = targetUri, StatsKey = "Stats key" });
     }
 }

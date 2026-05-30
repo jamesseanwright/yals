@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Yaurs;
+using Yaurs.Stats;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ builder.Services.AddDbContext<UrlDb>(opt => opt.UseNpgsql(
 ));
 
 builder.Services.AddScoped<IUrlService, UrlService>();
+builder.Services.AddScoped<IStatsKeyGenerator, StatsKeyGenerator>(); // TODO: can this dependency be a singleton?
 
 var app = builder.Build();
 

@@ -1,6 +1,8 @@
+using Yaurs.Stats;
+
 namespace Yaurs;
 
-class UrlService(UrlDb urlDb) : IUrlService
+class UrlService(UrlDb urlDb, IStatsKeyGenerator statsKeyGenerator) : IUrlService
 {
     public async Task<Url?> GetUrlAsync(Ulid id)
     {
@@ -10,29 +12,29 @@ class UrlService(UrlDb urlDb) : IUrlService
         {
             Id = urlEntity.Id,
             TargetUri = urlEntity.TargetUri,
-            StatsKey = "",
         } : null;
     }
 
-    public async Task<Url> CreateUrlAsync(Uri targetUri)
+    public async Task<CreatedUrlDto> CreateUrlAsync(Uri targetUri)
     {
         var id = Ulid.NewUlid();
+        var statsKey = statsKeyGenerator.Generate();
 
         urlDb.Add(new UrlEntity
         {
             Id = id,
             TargetUri = targetUri,
-            HashedStatsKey = "TODO"u8.ToArray(),
-            StatsKeySalt = "TODO"u8.ToArray(),
+            HashedStatsKey = statsKey.HashedKey,
+            StatsKeySalt = statsKey.Salt,
         });
 
         await urlDb.SaveChangesAsync();
 
-        return new Url
+        return new CreatedUrlDto
         {
             Id = id,
             TargetUri = targetUri,
-            StatsKey = "",
+            StatsKey = statsKey.RawKey,
         };
     }
 }
