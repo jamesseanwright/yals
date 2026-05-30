@@ -8,4 +8,6 @@ public class UrlEntity
     public required byte[] HashedStatsKey { get; set; }
 
     public required byte[] StatsKeySalt { get; set; }
+
+    public int LifetimeHits { get; set; } = 0;
 }

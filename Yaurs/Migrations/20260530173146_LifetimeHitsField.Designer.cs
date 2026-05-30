@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Yaurs;
@@ -11,9 +12,11 @@ using Yaurs;
 namespace Yaurs.Migrations
 {
     [DbContext(typeof(UrlDb))]
-    partial class UrlDbModelSnapshot : ModelSnapshot
+    [Migration("20260530173146_LifetimeHitsField")]
+    partial class LifetimeHitsField
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

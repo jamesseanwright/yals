@@ -5,6 +5,7 @@ using DotNet.Testcontainers.Builders;
 using System.Net.Http.Json;
 using System.Net;
 using System.Net.Http.Headers;
+using Yaurs.Stats;
 
 public class FunctionalTestFixture : IAsyncLifetime
 {
@@ -83,7 +84,7 @@ public class YaursFunctionalTests(FunctionalTestFixture fixture) : IClassFixture
 
         var getUrlStatsReq = new HttpRequestMessage
         {
-            RequestUri = new Uri($"/url-stats/{createUrlResBody.Id}"),
+            RequestUri = new Uri($"/urls/{createUrlResBody.Id}/stats"),
             Method = HttpMethod.Get,
         };
 
@@ -93,14 +94,15 @@ public class YaursFunctionalTests(FunctionalTestFixture fixture) : IClassFixture
 
         Assert.Equal(HttpStatusCode.OK, getUrlStatsRes.StatusCode);
 
-        var getUrlStatsResBody = await getUrlStatsRes.Content.ReadFromJsonAsync<GetUrlStatsDto>();
+        var getUrlStatsResBody = await getUrlStatsRes.Content.ReadFromJsonAsync<IList<Stat>>();
 
         if (getUrlStatsResBody is null)
         {
             Assert.Fail("URL stats response has no body");
         }
 
-        Assert.Equal(goRequestCount, getUrlStatsResBody.Hits.Lifetime);
+        var stat = Assert.Single(getUrlStatsResBody, x => x.Type == StatType.Lifetime);
+        Assert.Equal(goRequestCount, stat.Hits);
     }
 
     [Fact]
@@ -121,7 +123,7 @@ public class YaursFunctionalTests(FunctionalTestFixture fixture) : IClassFixture
         Assert.NotNull(resBody);
         Assert.IsType<Ulid>(resBody.Id);
         Assert.Equal(new Uri("https://foo"), resBody.TargetUri);
-        Assert.True(resBody.StatsKey.Length == 64, $"resBody.StatsKey is an unexpected length ({resBody.StatsKey.Length})");
+        Assert.Equal(64, resBody.StatsKey.Length);
     }
 
     [Fact]

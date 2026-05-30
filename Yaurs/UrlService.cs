@@ -4,14 +4,27 @@ namespace Yaurs;
 
 class UrlService(UrlDb urlDb, IStatsKeyGenerator statsKeyGenerator) : IUrlService
 {
-    public async Task<Url?> GetUrlAsync(Ulid id)
+    public async Task<GetUrlDto?> GetUrlAsync(Ulid id)
     {
         var urlEntity = await urlDb.Urls.FindAsync(id);
 
-        return urlEntity is not null ? new Url
+        return urlEntity is not null ? new GetUrlDto
         {
             Id = urlEntity.Id,
             TargetUri = urlEntity.TargetUri,
+
+            // Note that we surface hit statistics as a
+            // list so that:
+            //
+            // 1. we can easily introduce new stat types in the future
+            // 2. we can return a list of stats from our /urls/{id}/stats
+            //    subresource, better following RESTful conventions.
+            Stats = new List<Stat>([
+                new Stat {
+                    Type = StatType.Lifetime,
+                    Hits = urlEntity.LifetimeHits,
+                }
+            ])
         } : null;
     }
 
