@@ -106,6 +106,38 @@ public class YaursFunctionalTests(FunctionalTestFixture fixture) : IClassFixture
     }
 
     [Fact]
+    public async Task TestGetUrlStatsReturns401WhenInvalidAuthTokenProvided()
+    {
+        var client = fixture.CreateClient();
+
+        var createUrlRes = await client.PostAsJsonAsync("/urls", new CreateUrlDto
+        {
+            TargetUri = new Uri("https://foo"),
+        });
+
+        Assert.Equal(HttpStatusCode.Created, createUrlRes.StatusCode);
+
+        var createUrlResBody = await createUrlRes.Content.ReadFromJsonAsync<CreatedUrlDto>();
+
+        if (createUrlResBody is null)
+        {
+            Assert.Fail("URL creation response has no body");
+        }
+
+        var getUrlStatsReq = new HttpRequestMessage
+        {
+            RequestUri = new Uri($"/urls/{createUrlResBody.Id}/stats"),
+            Method = HttpMethod.Get,
+        };
+
+        getUrlStatsReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", "FF");
+
+        var getUrlStatsRes = await client.SendAsync(getUrlStatsReq);
+
+        Assert.Equal(HttpStatusCode.Unauthorized, getUrlStatsRes.StatusCode);
+    }
+
+    [Fact]
     public async Task TestPostUrlsCreatesNewShortenedLink()
     {
         var client = fixture.CreateClient();
@@ -138,7 +170,7 @@ public class YaursFunctionalTests(FunctionalTestFixture fixture) : IClassFixture
 
         Assert.Equal(HttpStatusCode.Created, createUrlRes.StatusCode);
 
-        var createUrlResBody = await createUrlRes.Content.ReadFromJsonAsync<Url>();
+        var createUrlResBody = await createUrlRes.Content.ReadFromJsonAsync<CreatedUrlDto>();
 
         Assert.NotNull(createUrlResBody);
 

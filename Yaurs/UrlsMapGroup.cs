@@ -32,21 +32,57 @@ static class UrlsMapGroup
         return TypedResults.Created($"http://TODO", createdUrl);
     }
 
-    internal static async Task<Results<Ok<IList<Stat>>, NotFound>> HandleGetStats(IUrlService urlService, Ulid id)
+    internal static async Task<Results<Ok<IList<Stat>>, NotFound, UnauthorizedHttpResult>> HandleGetStats(IUrlService urlService, IStatsAuthenticator statsAuthenticator, HttpContext context, Ulid id)
     {
         var url = await urlService.GetUrlAsync(id);
 
-        if (url is not null)
+        if (url is null)
         {
-            return TypedResults.Ok(url.Stats);
+            if (logger is not null && logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("URL with ID {Id} not found", id);
+            }
+
+            return TypedResults.NotFound();
         }
 
-        if (logger is not null && logger.IsEnabled(LogLevel.Information))
+        var statsKey = context.Request.Headers.Authorization.First()?.Replace("Bearer ", "");
+
+        try
         {
-            logger.LogInformation("URL with ID {Id} not found", id);
+            statsAuthenticator.Authenticate(url, statsKey);
+        }
+        catch (StatsKeyHashException e)
+        {
+            // TODO: make this code a bit more dry
+            if (logger is not null && logger.IsEnabled(LogLevel.Warning))
+            {
+                logger.LogWarning("Unable to compute stats key hash: {message}", e.Message);
+            }
+
+            return TypedResults.Unauthorized();
+        }
+        catch (StatsKeyAuthenticationException e)
+        {
+            if (logger is not null && logger.IsEnabled(LogLevel.Information))
+            {
+                logger.LogInformation("User-provided stats key missing or invalid: {message}", e.Message);
+            }
+
+            return TypedResults.Unauthorized();
         }
 
-        return TypedResults.NotFound();
+        // Note that we surface hit statistics as a list so that:
+        //
+        // 1. we can easily introduce new stat types in the future
+        // 2. we can return a list of stats from our /urls/{id}/stats
+        //    subresource, better following RESTful conventions.
+        return TypedResults.Ok<IList<Stat>>([
+            new Stat {
+                Type = StatType.Lifetime,
+                Hits = url.LifetimeHits,
+            }
+        ]);
     }
 
     private static bool IsRedirectableUri(Uri targetUri) => targetUri.IsAbsoluteUri &&

@@ -52,7 +52,7 @@ class FakeUrlService : IUrlService
 {
     public Uri? LastCreatedUri { get; private set; }
 
-    public Task<GetUrlDto?> GetUrlAsync(Ulid id) => Task.FromResult<GetUrlDto?>(null);
+    public Task<Url?> GetUrlAsync(Ulid id) => Task.FromResult<Url?>(null);
 
     public Task<CreatedUrlDto> CreateUrlAsync(Uri targetUri)
     {
