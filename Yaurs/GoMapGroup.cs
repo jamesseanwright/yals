@@ -9,10 +9,21 @@ static class GoMapGroup
         var urls = app.MapGroup("/go");
 
         urls.MapGet("/{id}", async Task<Results<RedirectHttpResult, NotFound>> (IUrlService urlService, Ulid id) =>
-            await urlService.GetUrlAsync(id)
-                is Url url
-                    ? TypedResults.Redirect(url.TargetUri.ToString(), permanent: true, preserveMethod: true)
-                    : TypedResults.NotFound()
-        );
+        {
+            var url = await urlService.GetUrlAsync(id);
+
+            if (url is not null)
+            {
+                return TypedResults.Redirect(url.TargetUri.ToString(), permanent: true, preserveMethod: true);
+            }
+
+
+            if (app.Logger.IsEnabled(LogLevel.Information))
+            {
+                app.Logger.LogInformation("URL with ID {Id} not found", id);
+            }
+
+            return TypedResults.NotFound();
+        });
     }
 }

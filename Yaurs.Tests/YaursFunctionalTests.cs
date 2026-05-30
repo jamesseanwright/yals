@@ -21,7 +21,7 @@ public class FunctionalTestFixture : IAsyncLifetime
 
     public HttpClient CreateClient()
     {
-        if (application == null)
+        if (application is null)
         {
             throw new Exception("Failed to create YaursWebApplicationFactory");
         }
@@ -42,7 +42,7 @@ public class FunctionalTestFixture : IAsyncLifetime
     {
         await postgres.StopAsync();
 
-        if (application != null)
+        if (application is not null)
         {
             await application.DisposeAsync();
         }

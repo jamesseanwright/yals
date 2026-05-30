@@ -6,7 +6,7 @@ class UrlService(UrlDb urlDb) : IUrlService
     {
         var urlEntity = await urlDb.Urls.FindAsync(id);
 
-        return urlEntity != null ? new Url
+        return urlEntity is not null ? new Url
         {
             Id = urlEntity.Id,
             TargetUri = urlEntity.TargetUri,
