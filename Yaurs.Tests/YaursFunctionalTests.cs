@@ -4,6 +4,7 @@ using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Builders;
 using System.Net.Http.Json;
 using System.Net;
+using System.Net.Http.Headers;
 
 public class FunctionalTestFixture : IAsyncLifetime
 {
@@ -52,10 +53,62 @@ public class FunctionalTestFixture : IAsyncLifetime
 public class YaursFunctionalTests(FunctionalTestFixture fixture) : IClassFixture<FunctionalTestFixture>
 {
     [Fact]
+    public async Task TestUrlCreationAndUtilisation()
+    {
+        var goRequestCount = 3;
+
+        var client = fixture.CreateClient();
+
+        var createUrlRes = await client.PostAsJsonAsync("/urls", new CreateUrlDto
+        {
+            TargetUri = new Uri("https://foo"),
+        });
+
+        Assert.Equal(HttpStatusCode.Created, createUrlRes.StatusCode);
+
+        var createUrlResBody = await createUrlRes.Content.ReadFromJsonAsync<CreatedUrlDto>();
+
+        if (createUrlResBody is null)
+        {
+            Assert.Fail("URL creation response has no body");
+        }
+
+        for (var i = 0; i < goRequestCount; i++)
+        {
+            var goRes = await client.GetAsync($"/go/{createUrlResBody.Id}");
+
+            Assert.Equal(HttpStatusCode.PermanentRedirect, goRes.StatusCode);
+            Assert.Equal(createUrlResBody.TargetUri, goRes.Headers.Location);
+        }
+
+        var getUrlStatsReq = new HttpRequestMessage
+        {
+            RequestUri = new Uri($"/url-stats/{createUrlResBody.Id}"),
+            Method = HttpMethod.Get,
+        };
+
+        getUrlStatsReq.Headers.Authorization = new AuthenticationHeaderValue("Bearer", createUrlResBody.StatsKey);
+
+        var getUrlStatsRes = await client.SendAsync(getUrlStatsReq);
+
+        Assert.Equal(HttpStatusCode.OK, getUrlStatsRes.StatusCode);
+
+        var getUrlStatsResBody = await getUrlStatsRes.Content.ReadFromJsonAsync<GetUrlStatsDto>();
+
+        if (getUrlStatsResBody is null)
+        {
+            Assert.Fail("URL stats response has no body");
+        }
+
+        Assert.Equal(goRequestCount, getUrlStatsResBody.Hits.Lifetime);
+    }
+
+    [Fact]
     public async Task TestPostUrlsCreatesNewShortenedLink()
     {
         var client = fixture.CreateClient();
 
+        // TODO: refactor to use client.PostAsJsonAsync<T>
         var res = await client.PostAsync("/urls", JsonContent.Create(new CreateUrlDto
         {
             TargetUri = new Uri("https://foo"),
