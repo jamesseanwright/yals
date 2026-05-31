@@ -1,6 +1,9 @@
+using System.Text.Json.Serialization;
+
 namespace Yals.Stats;
 
-static class StatType
+[JsonConverter(typeof(JsonStringEnumConverter<StatType>))]
+enum StatType
 {
-    public const string Lifetime = "lifetime";
+    Lifetime,
 }
