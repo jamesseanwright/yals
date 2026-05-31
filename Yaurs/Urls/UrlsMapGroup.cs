@@ -43,7 +43,7 @@ static partial class UrlsMapGroup
             return TypedResults.NotFound();
         }
 
-        var statsKey = context.Request.Headers.Authorization.First()?.Replace("Bearer ", "");
+        var statsKey = context.Request.Headers.Authorization.FirstOrDefault()?.Replace("Bearer ", "");
 
         try
         {
