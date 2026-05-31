@@ -6,6 +6,8 @@ using Yals.Urls;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddOpenApi();
+
 builder.Services.AddDbContext<UrlDb>(opt => opt.UseNpgsql(
     builder.Configuration.GetValue<string>("ConnectionStrings:Database")
 ));
