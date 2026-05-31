@@ -1,6 +1,6 @@
 namespace Yaurs.Stats;
 
-enum StatType
+static class StatType
 {
-    Lifetime,
+    public const string Lifetime = "lifetime";
 }
