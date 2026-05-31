@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: yaurs
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d yaurs"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrate
+    environment:
+      ConnectionStrings__Database: "Host=db;Port=5432;Database=yaurs;Username=postgres;Password=postgres"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "5090:5090"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__Database: "Host=db;Port=5432;Database=yaurs;Username=postgres;Password=postgres"
+    volumes:
+      # Mount source so dotnet watch picks up changes
+      - .:/app
+      # Isolate NuGet cache and build output from the host
+      - nuget-cache:/root/.nuget
+      - build-cache:/app/Yaurs/obj
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+volumes:
+  db-data:
+  nuget-cache:
+  build-cache:

@@ -1,0 +1,11 @@
+FROM mcr.microsoft.com/dotnet/sdk:10.0
+WORKDIR /app
+EXPOSE 5090
+
+# Restore dependencies as a separate layer so they're cached unless .csproj changes
+COPY Yaurs/Yaurs.csproj Yaurs/
+RUN dotnet restore Yaurs/Yaurs.csproj
+
+COPY . .
+WORKDIR /app/Yaurs
+ENTRYPOINT ["dotnet", "watch", "run", "--no-launch-profile", "--urls", "http://0.0.0.0:5090"]
