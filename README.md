@@ -113,7 +113,7 @@ Yals/
 
 ```bash
 git clone <repo-url>
-cd yaurs
+cd yals
 docker compose up
 ```
 
