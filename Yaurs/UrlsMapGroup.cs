@@ -29,7 +29,7 @@ static class UrlsMapGroup
 
         var createdUrl = await urlService.CreateUrlAsync(createUrlDto.TargetUri);
 
-        return TypedResults.Created($"http://TODO", createdUrl);
+        return TypedResults.Created($"/urls/{createdUrl.Id}", createdUrl);
     }
 
     internal static async Task<Results<Ok<IList<Stat>>, NotFound, UnauthorizedHttpResult>> HandleGetStats(IUrlService urlService, IStatsAuthenticator statsAuthenticator, HttpContext context, Ulid id)
