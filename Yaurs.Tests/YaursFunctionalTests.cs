@@ -142,11 +142,10 @@ public class YaursFunctionalTests(FunctionalTestFixture fixture) : IClassFixture
     {
         var client = fixture.CreateClient();
 
-        // TODO: refactor to use client.PostAsJsonAsync<T>
-        var res = await client.PostAsync("/urls", JsonContent.Create(new CreateUrlDto
+        var res = await client.PostAsJsonAsync("/urls", new CreateUrlDto
         {
             TargetUri = new Uri("https://foo"),
-        }));
+        });
 
         Assert.Equal(HttpStatusCode.Created, res.StatusCode);
 
@@ -163,10 +162,10 @@ public class YaursFunctionalTests(FunctionalTestFixture fixture) : IClassFixture
     {
         var client = fixture.CreateClient();
 
-        var createUrlRes = await client.PostAsync("/urls", JsonContent.Create(new CreateUrlDto
+        var createUrlRes = await client.PostAsJsonAsync("/urls", new CreateUrlDto
         {
             TargetUri = new Uri("https://foo"),
-        }));
+        });
 
         Assert.Equal(HttpStatusCode.Created, createUrlRes.StatusCode);
 
