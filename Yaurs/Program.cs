@@ -10,9 +10,9 @@ builder.Services.AddDbContext<UrlDb>(opt => opt.UseNpgsql(
 ));
 
 builder.Services.AddScoped<IUrlService, UrlService>();
-builder.Services.AddScoped<IStatsKeyGenerator, StatsKeyGenerator>(); // TODO: can this dependency be a singleton?
-builder.Services.AddScoped<IRandomNumberGenerator, CryptoRandomNumberGenerator>(); // TODO: can this dependency be a singleton?
-builder.Services.AddScoped<IStatsAuthenticator, StatsAuthenticator>(); // TODO: can this dependency be a singleton?
+builder.Services.AddSingleton<IStatsKeyGenerator, StatsKeyGenerator>();
+builder.Services.AddSingleton<IRandomNumberGenerator, CryptoRandomNumberGenerator>();
+builder.Services.AddSingleton<IStatsAuthenticator, StatsAuthenticator>();
 
 var app = builder.Build();
 
