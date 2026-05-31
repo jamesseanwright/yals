@@ -1,6 +1,4 @@
-using Yaurs.Stats;
-
-namespace Yaurs;
+namespace Yaurs.Urls;
 
 public record CreatedUrlDto
 {

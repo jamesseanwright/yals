@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using Yaurs;
+using Yaurs.Urls;
 
 #nullable disable
 
@@ -22,7 +22,7 @@ namespace Yaurs.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Yaurs.UrlEntity", b =>
+            modelBuilder.Entity("Yaurs.Urls.UrlEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .HasColumnType("uuid");

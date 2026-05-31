@@ -1,3 +1,5 @@
+using Yaurs.Urls;
+
 namespace Yaurs.Stats;
 
 interface IStatsAuthenticator

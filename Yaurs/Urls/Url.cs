@@ -1,6 +1,6 @@
-namespace Yaurs;
+namespace Yaurs.Urls;
 
-public class UrlEntity
+public record Url
 {
     public required Ulid Id { get; set; }
     public required Uri TargetUri { get; set; }

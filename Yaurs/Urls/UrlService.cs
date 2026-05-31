@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Yaurs.Stats;
 
-namespace Yaurs;
+namespace Yaurs.Urls;
 
 class UrlService(UrlDb urlDb, IStatsKeyGenerator statsKeyGenerator) : IUrlService
 {

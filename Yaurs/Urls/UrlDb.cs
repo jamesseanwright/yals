@@ -1,7 +1,7 @@
-namespace Yaurs;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+
+namespace Yaurs.Urls;
 
 public class UrlDb(DbContextOptions<UrlDb> options) : DbContext(options)
 {

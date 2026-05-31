@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Yaurs;
 using Yaurs.Crypto;
 using Yaurs.Stats;
+using Yaurs.Urls;
 
 var builder = WebApplication.CreateBuilder(args);
 

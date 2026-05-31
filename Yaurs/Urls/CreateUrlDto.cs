@@ -1,4 +1,4 @@
-namespace Yaurs;
+namespace Yaurs.Urls;
 
 public record CreateUrlDto
 {

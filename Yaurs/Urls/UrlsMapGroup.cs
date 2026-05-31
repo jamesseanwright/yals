@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging.Abstractions;
 using Yaurs.Stats;
 
-namespace Yaurs;
+namespace Yaurs.Urls;
 
 static partial class UrlsMapGroup
 {

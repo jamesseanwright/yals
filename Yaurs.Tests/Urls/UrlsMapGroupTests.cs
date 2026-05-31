@@ -1,6 +1,7 @@
-namespace Yaurs.Tests;
+namespace Yaurs.Tests.Urls;
 
 using Microsoft.AspNetCore.Http.HttpResults;
+using Yaurs.Urls;
 
 public class UrlsMapGroupTests
 {
