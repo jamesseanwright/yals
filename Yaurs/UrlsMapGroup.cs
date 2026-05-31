@@ -1,15 +1,16 @@
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.Extensions.Logging.Abstractions;
 using Yaurs.Stats;
 
 namespace Yaurs;
 
-static class UrlsMapGroup
+static partial class UrlsMapGroup
 {
-    private static ILogger? logger;
+    private static ILogger logger = NullLogger.Instance;
 
     public static void Register(WebApplication app)
     {
-        logger = app.Logger;
+        logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(UrlsMapGroup));
 
         var urls = app.MapGroup("/urls");
 
@@ -38,11 +39,7 @@ static class UrlsMapGroup
 
         if (url is null)
         {
-            if (logger is not null && logger.IsEnabled(LogLevel.Information))
-            {
-                logger.LogInformation("URL with ID {Id} not found", id);
-            }
-
+            LogUrlNotFound(logger, id);
             return TypedResults.NotFound();
         }
 
@@ -54,21 +51,12 @@ static class UrlsMapGroup
         }
         catch (StatsKeyHashException e)
         {
-            // TODO: make this code a bit more dry
-            if (logger is not null && logger.IsEnabled(LogLevel.Warning))
-            {
-                logger.LogWarning("Unable to compute stats key hash: {message}", e.Message);
-            }
-
+            LogStatsKeyHashError(logger, e.Message);
             return TypedResults.Unauthorized();
         }
         catch (StatsKeyAuthenticationException e)
         {
-            if (logger is not null && logger.IsEnabled(LogLevel.Information))
-            {
-                logger.LogInformation("User-provided stats key missing or invalid: {message}", e.Message);
-            }
-
+            LogStatsKeyAuthError(logger, e.Message);
             return TypedResults.Unauthorized();
         }
 
@@ -87,4 +75,13 @@ static class UrlsMapGroup
 
     private static bool IsRedirectableUri(Uri targetUri) => targetUri.IsAbsoluteUri &&
             (targetUri.Scheme == Uri.UriSchemeHttp || targetUri.Scheme == Uri.UriSchemeHttps);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "URL with ID {Id} not found")]
+    private static partial void LogUrlNotFound(ILogger logger, Ulid id);
+
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Unable to compute stats key hash: {message}")]
+    private static partial void LogStatsKeyHashError(ILogger logger, string message);
+
+    [LoggerMessage(Level = LogLevel.Information, Message = "User-provided stats key missing or invalid: {message}")]
+    private static partial void LogStatsKeyAuthError(ILogger logger, string message);
 }
