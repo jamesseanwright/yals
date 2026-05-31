@@ -13,7 +13,16 @@ class StatsAuthenticator() : IStatsAuthenticator
             throw new StatsKeyAuthenticationException();
         }
 
-        var bStatsKey = Convert.FromHexString(statsKey);
+        byte[] bStatsKey;
+
+        try
+        {
+            bStatsKey = Convert.FromHexString(statsKey);
+        }
+        catch (FormatException)
+        {
+            throw new StatsKeyAuthenticationException();
+        }
 
         var concatentated = new byte[bStatsKey.Length + url.StatsKeySalt.Length];
 

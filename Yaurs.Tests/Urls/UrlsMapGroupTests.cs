@@ -1,6 +1,8 @@
 namespace Yaurs.Tests.Urls;
 
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Yaurs.Stats;
 using Yaurs.Urls;
 
 public class UrlsMapGroupTests
@@ -46,6 +48,14 @@ public class UrlsMapGroupTests
         var problem = Assert.IsType<ValidationProblem>(result.Result);
         Assert.Contains(nameof(CreateUrlDto.TargetUri), problem.ProblemDetails.Errors.Keys);
         Assert.Null(urlService.LastCreatedUri);
+    }
+
+    [Fact]
+    public async Task HandleGetStats_ReturnsNotFound_WhenUrlDoesNotExist()
+    {
+        var result = await UrlsMapGroup.HandleGetStats(urlService, new StatsAuthenticator(), new DefaultHttpContext(), Ulid.NewUlid());
+
+        Assert.IsType<NotFound>(result.Result);
     }
 }
 
