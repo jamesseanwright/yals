@@ -18,7 +18,7 @@ services:
   migrate:
     build:
       context: .
-      dockerfile: Dockerfile.migrate
+      dockerfile: Dockerfile.dbmigrate
     environment:
       ConnectionStrings__Database: "Host=db;Port=5432;Database=yaurs;Username=postgres;Password=postgres"
     depends_on:
