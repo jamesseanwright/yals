@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Yals.Tests/Yals.Tests.csproj" />
+  <Project Path="Yals/Yals.csproj" />
+</Solution>

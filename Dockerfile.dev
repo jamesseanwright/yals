@@ -3,9 +3,9 @@ WORKDIR /app
 EXPOSE 5090
 
 # Restore dependencies as a separate layer so they're cached unless .csproj changes
-COPY Yaurs/Yaurs.csproj Yaurs/
-RUN dotnet restore Yaurs/Yaurs.csproj
+COPY Yals/Yals.csproj Yals/
+RUN dotnet restore Yals/Yals.csproj
 
 COPY . .
-WORKDIR /app/Yaurs
+WORKDIR /app/Yals
 ENTRYPOINT ["dotnet", "watch", "run", "--no-launch-profile", "--urls", "http://0.0.0.0:5090"]

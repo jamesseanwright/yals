@@ -2,8 +2,8 @@ FROM mcr.microsoft.com/dotnet/sdk:10.0
 WORKDIR /app
 RUN dotnet tool install --global dotnet-ef
 ENV PATH="$PATH:/root/.dotnet/tools"
-COPY Yaurs/Yaurs.csproj Yaurs/
-RUN dotnet restore Yaurs/Yaurs.csproj
-COPY Yaurs/ Yaurs/
-WORKDIR /app/Yaurs
+COPY Yals/Yals.csproj Yals/
+RUN dotnet restore Yals/Yals.csproj
+COPY Yals/ Yals/
+WORKDIR /app/Yals
 ENTRYPOINT ["dotnet", "ef", "database", "update"]
